@@ -1,0 +1,6 @@
+@CineBook_HostAddress = http://localhost:5298
+
+GET {{CineBook_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
