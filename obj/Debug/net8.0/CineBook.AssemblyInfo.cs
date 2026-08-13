@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CineBook")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75cd1651cec56f5d563302b36235372287953d52")]
 [assembly: System.Reflection.AssemblyProductAttribute("CineBook")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CineBook")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

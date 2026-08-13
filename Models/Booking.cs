@@ -26,7 +26,7 @@ namespace CineBook.Models
         [Column("TOTAL_PRICE", TypeName = "decimal(10,2)")]
         public decimal TotalPrice { get; set; }
 
-        [Column("BOOKING_STATUS")] 
+        [Column("STATUS")] 
         public BookingStatus Status { get; set; } = BookingStatus.PENDING;
 
         public ICollection<BookingSeat> BookingSeats { get; set; } = new List<BookingSeat>();

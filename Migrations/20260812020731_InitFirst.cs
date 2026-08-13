@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CineBook.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitFirst : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -94,7 +94,7 @@ namespace CineBook.Migrations
                     SCHEDULE_ID = table.Column<long>(type: "bigint", nullable: false),
                     TOTAL_TICKETS = table.Column<int>(type: "integer", nullable: false),
                     TOTAL_PRICE = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
-                    BOOKING_STATUS = table.Column<string>(type: "text", nullable: false)
+                    STATUS = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

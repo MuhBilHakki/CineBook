@@ -38,7 +38,7 @@ namespace CineBook.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("BOOKING_STATUS");
+                        .HasColumnName("STATUS");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(10,2)")

@@ -1,5 +1,7 @@
 ﻿using CineBook.DTOs;
+using CineBook.Exceptions;
 using CineBook.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,15 +34,27 @@ namespace CineBook.Controllers
             return Ok(_bookingService.ToDetailResponse(booking));
         }
 
+        [Authorize]
         [HttpPost] // POST /api/bookings
         public async Task<IActionResult> CreateBooking([FromBody] CreateBookingRequest request)
         {
-            var result = await _bookingService.CreateAsync(request);
+            long userId = long.Parse(User.FindFirst("userId")!.Value);
 
-            if (result == null)
-                return Conflict(new { error = "Kursi sudah dipesan oleh pengguna lain" });
-
-            return Created($"/api/bookings/{result.Id}", result);
+           
+            try
+            {
+                BookingDetailResponse? result = await _bookingService.CreateAsync(request, userId);
+                return Created($"/api/bookings/{result!.Id}", result);
+            }
+            catch (SeatNotAvailableException ex)
+            {
+                return Conflict(new {status = "error", message = ex.Message});
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { status = "error", message = ex.Message });
+            }
+            
         }
 
         [HttpPut("{id:long}")] // PUT /api/bookings/{id}
