@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CineBook.Migrations
 {
     [DbContext(typeof(CineBookDbContext))]
-    [Migration("20260811091410_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260812020731_InitFirst")]
+    partial class InitFirst
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace CineBook.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("BOOKING_STATUS");
+                        .HasColumnName("STATUS");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(10,2)")

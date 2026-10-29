@@ -1,0 +1,36 @@
+2026-08-12 17:13:40 [INF] User profile is available. Using 'C:\Users\Adicipta\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-08-12 17:13:40 [INF] Now listening on: http://localhost:5298
+2026-08-12 17:13:40 [INF] Application started. Press Ctrl+C to shut down.
+2026-08-12 17:13:40 [INF] Hosting environment: Development
+2026-08-12 17:13:40 [INF] Content root path: C:\Users\Adicipta\source\repos\CineBook\CineBook
+2026-08-12 17:13:41 [INF] Request starting HTTP/1.1 GET http://localhost:5298/swagger/index.html - null null
+2026-08-12 17:13:41 [INF] Request starting HTTP/1.1 GET http://localhost:5298/_vs/browserLink - null null
+2026-08-12 17:13:41 [INF] Request finished HTTP/1.1 GET http://localhost:5298/swagger/index.html - 200 null text/html;charset=utf-8 359.9536ms
+2026-08-12 17:13:41 [INF] Request starting HTTP/1.1 GET http://localhost:5298/_framework/aspnetcore-browser-refresh.js - null null
+2026-08-12 17:13:41 [INF] Request finished HTTP/1.1 GET http://localhost:5298/_framework/aspnetcore-browser-refresh.js - 200 16501 application/javascript; charset=utf-8 12.0572ms
+2026-08-12 17:13:41 [INF] Request finished HTTP/1.1 GET http://localhost:5298/_vs/browserLink - 200 null text/javascript; charset=UTF-8 56.6876ms
+2026-08-12 17:13:41 [INF] Request starting HTTP/1.1 GET http://localhost:5298/swagger/v1/swagger.json - null null
+2026-08-12 17:13:41 [INF] Request finished HTTP/1.1 GET http://localhost:5298/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 22.2009ms
+2026-08-12 17:13:57 [INF] Request starting HTTP/1.1 POST http://localhost:5298/api/auth/login - application/json 84
+2026-08-12 17:13:57 [WRN] Failed to determine the https port for redirect.
+2026-08-12 17:13:57 [INF] No CORS policy found for the specified request.
+2026-08-12 17:13:58 [INF] Executing endpoint 'CineBook.Controllers.AuthController.Login (CineBook)'
+2026-08-12 17:13:58 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(CineBook.DTOs.LoginRequest) on controller CineBook.Controllers.AuthController (CineBook).
+2026-08-12 17:13:59 [INF] Executed DbCommand (36ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."ID", u."EMAIL", u."NAMA", u."PASSWORD"
+FROM "USER" AS u
+2026-08-12 17:14:00 [INF] Executing OkObjectResult, writing value of type 'CineBook.DTOs.LoginResponse'.
+2026-08-12 17:14:00 [INF] Executed action CineBook.Controllers.AuthController.Login (CineBook) in 2125.5981ms
+2026-08-12 17:14:00 [INF] Executed endpoint 'CineBook.Controllers.AuthController.Login (CineBook)'
+2026-08-12 17:14:00 [INF] Request finished HTTP/1.1 POST http://localhost:5298/api/auth/login - 200 null application/json; charset=utf-8 2302.9137ms
+2026-08-12 17:14:15 [INF] Request starting HTTP/1.1 POST http://localhost:5298/api/bookings - application/json 99
+2026-08-12 17:14:15 [INF] Executing endpoint 'CineBook.Controllers.BookingsController.CreateBooking (CineBook)'
+2026-08-12 17:14:15 [INF] Route matched with {action = "CreateBooking", controller = "Bookings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateBooking(CineBook.DTOs.CreateBookingRequest) on controller CineBook.Controllers.BookingsController (CineBook).
+2026-08-12 17:14:20 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT s."ID", s."IS_AVAILABLE", s."SCHEDULE_ID", s."SEAT_NUMBER"
+FROM "SEAT" AS s
+2026-08-12 17:14:21 [WRN] Kursi A1 sudah dipesan, percobaan booking oleh user 1
+2026-08-12 17:14:21 [INF] Executing ConflictObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-08-12 17:14:21 [INF] Executed action CineBook.Controllers.BookingsController.CreateBooking (CineBook) in 5195.9071ms
+2026-08-12 17:14:21 [INF] Executed endpoint 'CineBook.Controllers.BookingsController.CreateBooking (CineBook)'
+2026-08-12 17:14:21 [INF] Request finished HTTP/1.1 POST http://localhost:5298/api/bookings - 409 null application/json; charset=utf-8 5308.239ms

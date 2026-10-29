@@ -23,7 +23,9 @@ namespace CineBook.Controllers
         {
             var movies = await _movieService.GetAllAsync(search, page, limit);
             return Ok(movies);
+            //throw new Exception("Test Middle");
         }
+        
     }
 
 }

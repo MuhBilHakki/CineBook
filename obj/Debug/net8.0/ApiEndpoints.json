@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "CineBook.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CineBook.DTOs.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CineBook.Controllers.BookingsController",
     "Method": "GetBookings",
     "RelativePath": "api/bookings",

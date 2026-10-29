@@ -1,4 +1,5 @@
 ﻿using CineBook.DTOs;
+using CineBook.Exceptions;
 using CineBook.Models;
 using CineBook.Repositories;
 
@@ -9,21 +10,40 @@ namespace CineBook.Services
         private readonly IRepository<Booking> _bookingRepository;
         private readonly IRepository<Seat> _seatRepository;
         private readonly IRepository<BookingSeat> _bookingSeatRepository;
+        private readonly ILogger<BookingService> _logger;
 
         public BookingService(
             IRepository<Booking> bookingRepository,
             IRepository<Seat> seatRepository,
-            IRepository<BookingSeat> bookingSeatRepository)
+            IRepository<BookingSeat> bookingSeatRepository,
+            ILogger<BookingService> logger)
+            
         {
             _bookingRepository = bookingRepository;
             _seatRepository = seatRepository;
             _bookingSeatRepository = bookingSeatRepository;
+            _logger = logger;
         }
 
+        //public async Task<Booking?> GetByIdAsync(long id)
+        //{
+        //    return await _bookingRepository.GetByIdAsync(
+        //        id, "Schedule.Movie", "Schedule.Theater", "BookingSeats.Seat");
+        //}
         public async Task<Booking?> GetByIdAsync(long id)
         {
-            return await _bookingRepository.GetByIdAsync(
-                id, "Schedule.Movie", "Schedule.Theater", "BookingSeats.Seat");
+            try
+            {
+                //Schedule? sched = null;
+                //string title = sched.Movie!.Title;
+
+                return await _bookingRepository.GetByIdAsync(id, "Schedule.Movie", "Schedule.Theater", "BookingSeats.Seat");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+           
         }
 
         public async Task<List<Booking>> GetAllAsync(string? status, DateTime? date)
@@ -38,47 +58,84 @@ namespace CineBook.Services
             return bookings;
         }
 
-        public async Task<BookingDetailResponse?> CreateAsync(CreateBookingRequest request)
+        public async Task<BookingDetailResponse?> CreateAsync(CreateBookingRequest request, long userId)
         {
-            var allSeats = await _seatRepository.GetAllAsync();
-            var requestedSeats = allSeats
-                .Where(s => request.SeatIds.Contains(s.Id))
-                .ToList();
+            await _bookingRepository.BeginTransactionAsync();
 
-            bool anySeatTaken = requestedSeats.Any(s => !s.IsAvailable);
-            if (anySeatTaken || requestedSeats.Count != request.SeatIds.Count)
+            try
             {
-                return null;
-            }
 
-            var booking = new Booking
-            {
-                UserId = 1,
-                ScheduleId = request.ScheduleId,
-                TotalTickets = request.TotalTickets,
-                TotalPrice = request.TotalPrice,
-                Status = BookingStatus.PENDING
-            };
+                var allSeats = await _seatRepository.GetAllAsync();
+                var requestedSeats = allSeats
+                    .Where(s => request.SeatIds.Contains(s.Id))
+                    .ToList();
 
-            await _bookingRepository.AddAsync(booking);
-            await _bookingRepository.SaveChangesAsync();
-
-            foreach (var seat in requestedSeats)
-            {
-                seat.IsAvailable = false;
-                _seatRepository.Update(seat);
-
-                await _bookingSeatRepository.AddAsync(new BookingSeat
+                if(requestedSeats.Count != request.SeatIds.Count)
                 {
-                    BookingId = booking.Id,
-                    SeatId = seat.Id
-                });
+                    await _bookingRepository.RollbackTransactionAsync();
+                    throw new NotFoundException("Salah satu kursi yang diminta tidak ditemukan");
+                }
+
+                Seat? takenSeat = requestedSeats.FirstOrDefault(s => !s.IsAvailable);
+                if (takenSeat != null)
+                {
+                    _logger.LogWarning("Kursi {SeatNumber} sudah dipesan, percobaan booking oleh user {UserId}",
+                    takenSeat.SeatNumber, userId);
+
+                    await _bookingRepository.RollbackTransactionAsync();
+                    throw new SeatNotAvailableException(takenSeat.SeatNumber);
+                }
+
+                var booking = new Booking
+                {
+                    UserId = userId,
+                    ScheduleId = request.ScheduleId,
+                    TotalTickets = request.TotalTickets,
+                    TotalPrice = request.TotalPrice,
+                    Status = BookingStatus.PENDING
+                };
+
+                await _bookingRepository.AddAsync(booking);
+          
+
+                foreach (var seat in requestedSeats)
+                {
+                    seat.IsAvailable = false;
+                    _seatRepository.Update(seat);
+
+                    await _bookingSeatRepository.AddAsync(new BookingSeat
+                    {
+                        Booking = booking,
+                        SeatId = seat.Id
+                    });
+                }
+
+                await _bookingRepository.SaveChangesAsync();
+
+                await _bookingRepository.CommitTransactionAsync();
+
+                _logger.LogInformation("Booking berhasil dibuat: booking {BookingId}, user {UserId}, {SeatCount} kursi",
+                booking.Id, userId, requestedSeats.Count);
+
+
+                var created = await GetByIdAsync(booking.Id);
+                return created != null ? ToDetailResponse(created) : null;
             }
-
-            await _seatRepository.SaveChangesAsync();
-
-            var created = await GetByIdAsync(booking.Id);
-            return created != null ? ToDetailResponse(created) : null;
+            catch (SeatNotAvailableException)
+            {
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Booking gagal untuk user {UserId}", userId);
+                await _bookingRepository.RollbackTransactionAsync();
+                
+                throw;
+            }
         }
 
         public async Task<BookingDetailResponse?> UpdateAsync(long id, CreateBookingRequest request)
